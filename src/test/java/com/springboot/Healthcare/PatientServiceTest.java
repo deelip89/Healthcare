@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class PatientServiceTest {
-	@Autowired
-	private PatientService patientService;
+	
+	private PatientService patientService = new PatientService();
 	
 	@Test
 	public void addPatientTest() {
@@ -45,11 +45,24 @@ public class PatientServiceTest {
 		assertEquals(2, patients.size());
 		
 	}
+	@Test
+	public void deletePatientTest() {
+	 Patient patient = new Patient(1L, "Kusum", "Khadka");
+	 patientService.addPatient(patient);
+	 Patient result = patientService.deletePatient(1L);
+	 assertEquals("Kusum", result.getFirstName());
+	 assertEquals("Khadka", result.getLastName());
 	
 	
+	}
+	@Test
+	public void updatePatientTest() {
+	 Patient patient = new Patient(1L, "Kusum", "Khadka");
+	 patientService.addPatient(patient);
+	 Patient updatedPatient = new Patient(1L, "Ram", "Sharma");
+	 Patient result = patientService.updatePatient(1L, updatedPatient);
+	 assertEquals("Ram", result.getFirstName());
+	 assertEquals("Sharma", result.getLastName());
 	
-	
-	
-	
-
+	}	
 }

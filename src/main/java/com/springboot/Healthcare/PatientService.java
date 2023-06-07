@@ -25,6 +25,18 @@ public class PatientService {
 		return new ArrayList<>(patients.values());
 		
 	}
+	public Patient deletePatient(Long id) {
+		 return patients.remove(id);
+	}
+	public Patient updatePatient(Long id, Patient patient) {
+		if (patients.containsKey(id)) {
+			patient.setId(id);
+			patients.put(id, patient);
+			return patient;
+		}
+		return null;
+		
+	}
 	
 
 }
