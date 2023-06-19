@@ -13,7 +13,7 @@ public class PatientService {
 	
 	public Patient addPatient(Patient patient) {
 		patient.setId(nextId++);
-		patients.put(patient.getId(), patient);
+     	patients.put(patient.getId(), patient);
 		return patient;
 		
 	}
@@ -37,6 +37,7 @@ public class PatientService {
 		return null;
 		
 	}
+	
 	
 
 }
