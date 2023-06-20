@@ -14,7 +14,7 @@ public class AppointmentService {
 
 	public Appointment addAppointment(Appointment appointment) {
 		appointment.setAppointmentId(nextAppointmentId++);
-//		appointment.setPatientId(getPatientId);
+
 		appointments.put(appointment.getAppointmentId(), appointment);
 		return appointment;
 	}
