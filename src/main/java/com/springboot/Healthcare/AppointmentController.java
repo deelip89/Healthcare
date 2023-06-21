@@ -28,8 +28,8 @@ public class AppointmentController {
 	}
 
 	@GetMapping("/patient/{patientId}")
-	public List<Appointment> getAppointmentsByPatient(@PathVariable Long patientId) {
-		return appointmentService.getAppointmentsByPatient(patientId);
+	public List<Appointment> getAppointmentsByPatientId(@PathVariable Long patientId) {
+		return appointmentService.getAppointmentsByPatientId(patientId);
 	}
 
 	@DeleteMapping("/{appointmentId}")

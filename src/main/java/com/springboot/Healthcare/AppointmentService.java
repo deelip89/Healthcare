@@ -14,7 +14,6 @@ public class AppointmentService {
 
 	public Appointment addAppointment(Appointment appointment) {
 		appointment.setAppointmentId(nextAppointmentId++);
-
 		appointments.put(appointment.getAppointmentId(), appointment);
 		return appointment;
 	}
@@ -23,7 +22,7 @@ public class AppointmentService {
 		return appointments.get(appointmentId);
 	}
 
-	public List<Appointment> getAppointmentsByPatient(Long patientId) {
+	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
 		List<Appointment> patientAppointments = new ArrayList<>();
 		for (Appointment appointment : appointments.values()) {
 			if (appointment.getPatientId().equals(patientId)) {
