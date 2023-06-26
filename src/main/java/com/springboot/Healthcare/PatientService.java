@@ -16,7 +16,11 @@ public class PatientService {
      	patients.put(patient.getId(), patient);
 		return patient;
 		
-	}
+		}
+	 public Map<Long, Patient> getPatients() {
+	        return patients;
+	    }
+	
 	public Patient getPatient(Long id) {
 		return patients.get(id);
 		

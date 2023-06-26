@@ -7,10 +7,8 @@ public class Patient {
 	public Patient() {
 		
 	}
-
-	public Patient(Long id, String firstName, String lastName) {
+	public Patient( String firstName, String lastName) {
 		super();
-		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
