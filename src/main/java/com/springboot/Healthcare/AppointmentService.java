@@ -1,4 +1,5 @@
 package com.springboot.Healthcare;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,31 +10,30 @@ public class AppointmentService {
 	private Map<Long, Appointment> appointments = new HashMap<>();
 	private Long nextAppointmentId = 1L;
 	public Appointment addAppointment(Appointment appointment) {
-		// TODO Auto-generated method stub
 		appointment.setAppointmentId(nextAppointmentId++);
         appointments.put(appointment.getAppointmentId(), appointment);
         return appointment;
-        
-	
 	}
+	
 	public Map<Long, Appointment> getAppointments(){
 		return appointments;
 	}
 	
 	public Appointment getAppointment(Long appointmentId) {
-		// TODO Auto-generated method stub
-		
-		return null;
+			return appointments.get(appointmentId);
+			
 	}
 	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
-		// TODO Auto-generated method stub
-		return null;
+		       List<Appointment> patientAppointments = new ArrayList<>();
+		       for (Appointment appointment : appointments.values()) {
+		           if (appointment.getPatientId().equals(patientId)) {
+		               patientAppointments.add(appointment);
+		           }
+		       }
+		       return patientAppointments;  
 	}
+	
 	public Appointment deleteAppointment(Long appointmentId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
-	
+	     return appointments.remove(appointmentId);
+	}	
 }
