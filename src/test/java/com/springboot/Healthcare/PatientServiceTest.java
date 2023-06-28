@@ -3,22 +3,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
-
-
 @SpringBootTest
 public class PatientServiceTest {
-    @Autowired
-	private PatientService patientService;
+	@Mock
+    private PatientRepository patientRepository;
+
+	@InjectMocks
+    private PatientService patientService;
+//    @Autowired
+//	private PatientService patientService;
 
 	@BeforeEach
 	public void setUp() {
@@ -28,6 +37,7 @@ public class PatientServiceTest {
 	@Test
 	public void addPatientTest() {
 	Patient patient = new Patient( "Deelip", "Chhetri");
+	when(patientRepository.save(patient)).thenReturn(patient);
 	Patient addedPatient = patientService.addPatient(patient);
 		Map<Long, Patient> patients = patientService.getPatients();
 		assertNotNull(addedPatient);
@@ -49,11 +59,17 @@ public class PatientServiceTest {
 	@Test
 	public void getPatientTest() {
 		Patient patient = new Patient( "Deelip", "Chhetri");
+		patient.setId(1L);
+        when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
+
+		
 		patientService.addPatient(patient);
 		Patient result = patientService.getPatient(1L);
 		assertEquals(patient, result);
 	}
 	
+	
+
 	@Test
 	public void getPatientTest_Negative_NonExistentPatient() {
 		Long nonExistentId = 2L;
@@ -67,6 +83,8 @@ public class PatientServiceTest {
 		Patient patient2 = new Patient( "Sagar", "Thapa");
 		patientService.addPatient(patient1);
 		patientService.addPatient(patient2);
+        when(patientRepository.findAll()).thenReturn(Arrays.asList(patient1, patient2));
+
 		List<Patient> allPatients = patientService.getAllPatient();
 		assertEquals(2, allPatients.size());
 		assertTrue(allPatients.contains(patient1));

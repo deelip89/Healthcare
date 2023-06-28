@@ -1,5 +1,7 @@
 package com.springboot.Healthcare;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,36 +11,41 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 @RestController
 @RequestMapping("/patients")
 public class PatientController {
-	@Autowired
-	private PatientService patientService;
-	
-	@PostMapping("/addpatient")
-	public Patient addpatient(@RequestBody Patient patient) {
-		return patientService.addPatient(patient);
-	}
-	
-	@GetMapping("/{id}")
-	public Patient getPatient(@PathVariable Long id) {
-		return patientService.getPatient(id);
-		
-	}
-	@GetMapping
-	public List<Patient>getAllPatients(){
-		return patientService.getAllPatient();
-		
-	}
-	@DeleteMapping("/{id}")
-	public Patient deletePatient(@PathVariable Long id) {
-		return patientService.deletePatient(id);
-		
-	}
-	@PutMapping("/{id}")
-	public Patient updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
-		return patientService.updatePatient(id, patient);
-	}
+   @Autowired
+   private PatientRepository patientRepository;
 
+   @PostMapping("/addpatient")
+   public Patient addPatient(@RequestBody Patient patient) {
+       return patientRepository.save(patient);
+   }
+
+   @GetMapping("/{id}")
+   public Optional<Patient> getPatient(@PathVariable Long id) {
+       return patientRepository.findById(id);
+   }
+
+   @GetMapping
+   public List<Patient> getAllPatients() {
+       return patientRepository.findAll();
+   }
+
+   @DeleteMapping("/{id}")
+   public void deletePatient(@PathVariable Long id) {
+       patientRepository.deleteById(id);
+   }
+
+   @PutMapping("/{id}")
+   public Patient updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
+       if (patientRepository.existsById(id)) {
+           patient.setId(id);
+           return patientRepository.save(patient);
+       }
+       return null;
+   }
 }
+
+
+

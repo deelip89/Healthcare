@@ -3,9 +3,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+
 public class AppointmentService {
 	private Map<Long, Appointment> appointments = new HashMap<>();
 	private Long nextAppointmentId = 1L;
@@ -33,7 +36,8 @@ public class AppointmentService {
 		       return patientAppointments;  
 	}
 	
-	public Appointment deleteAppointment(Long appointmentId) {
+	public  Appointment deleteAppointment(Long appointmentId) {
 	     return appointments.remove(appointmentId);
+		
 	}	
 }
