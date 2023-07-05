@@ -16,13 +16,10 @@ public class AppointmentService {
 	public Appointment addAppointment(Appointment appointment) {
          Long appointmentId = nextAppointmentId++;
         
-        
         appointment.setAppointmentId(appointmentId);
 
-       
         appointments.put(appointmentId, appointment);
-
-     
+    
      // TODO Auto-generated method stub
         return appointment;
 						
