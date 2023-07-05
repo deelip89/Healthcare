@@ -56,5 +56,5 @@ public class Appointment {
 	public void setTime(String time) {
 		this.time = time;
 	}
-
+	
 }

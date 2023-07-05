@@ -13,26 +13,29 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
+
+
 public class PatientServiceTest {
 	@Mock
     private PatientRepository patientRepository;
 
 	@InjectMocks
     private PatientService patientService;
-//    @Autowired
-//	private PatientService patientService;
-
+	
+	
 	@BeforeEach
-	public void setUp() {
-		patientService = new PatientService();
-	}
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
 	@Test
 	public void addPatientTest() {
@@ -93,7 +96,9 @@ public class PatientServiceTest {
 
 	@Test
 	void deletePatientTest() {
-		Patient patient = new Patient( "Deelip", "Chhetri");
+	     Patient patient = new Patient( "Deelip", "Chhetri");
+		
+		when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
 		patientService.addPatient(patient);
 		Patient deletedPatient = patientService.deletePatient(1L);
 		assertEquals(patient, deletedPatient);
@@ -109,9 +114,12 @@ public class PatientServiceTest {
 
 	@Test
 	void updatePatientTest() {
+		
 		Patient patient = new Patient( "Deelip", "Chhetri");
 		patientService.addPatient(patient);
 		Patient updatedPatient = new Patient( "Sagar", "Thapa");
+		when(patientRepository.existsById(1L)).thenReturn(true);
+		when(patientRepository.save(patient)).thenReturn(patient);
 		Patient result = patientService.updatePatient(1L, updatedPatient);
 		assertEquals(updatedPatient, result);
 		assertEquals("Thapa", patientService.getPatient(1L).getLastName());

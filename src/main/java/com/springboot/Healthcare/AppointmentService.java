@@ -1,43 +1,44 @@
 package com.springboot.Healthcare;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-
 public class AppointmentService {
+	private AppointmentRepository appointmentRepository;
+
 	private Map<Long, Appointment> appointments = new HashMap<>();
-	private Long nextAppointmentId = 1L;
+	private Long nextAppointmentId= 1L;
+
 	public Appointment addAppointment(Appointment appointment) {
-		appointment.setAppointmentId(nextAppointmentId++);
-        appointments.put(appointment.getAppointmentId(), appointment);
+         Long appointmentId = nextAppointmentId++;
+        
+        
+        appointment.setAppointmentId(appointmentId);
+
+       
+        appointments.put(appointmentId, appointment);
+
+     
+     // TODO Auto-generated method stub
         return appointment;
-	}
-	
-	public Map<Long, Appointment> getAppointments(){
-		return appointments;
-	}
-	
-	public Appointment getAppointment(Long appointmentId) {
-			return appointments.get(appointmentId);
-			
-	}
-	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
-		       List<Appointment> patientAppointments = new ArrayList<>();
-		       for (Appointment appointment : appointments.values()) {
-		           if (appointment.getPatientId().equals(patientId)) {
-		               patientAppointments.add(appointment);
-		           }
-		       }
-		       return patientAppointments;  
-	}
-	
-	public  Appointment deleteAppointment(Long appointmentId) {
-	     return appointments.remove(appointmentId);
+						
 		
-	}	
 }
+
+	public Optional<Appointment> getAppointment(Long appointmentId) {
+		// TODO Auto-generated method stub
+		return  appointmentRepository.findById(appointmentId);
+	}
+
+	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+}
+
+	
