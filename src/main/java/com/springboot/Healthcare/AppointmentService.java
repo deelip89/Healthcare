@@ -22,10 +22,8 @@ public class AppointmentService {
     
      // TODO Auto-generated method stub
         return appointment;
-						
-		
+							
 }
-
 	public Optional<Appointment> getAppointment(Long appointmentId) {
 		// TODO Auto-generated method stub
 		return  appointmentRepository.findById(appointmentId);
@@ -33,7 +31,13 @@ public class AppointmentService {
 
 	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
 		// TODO Auto-generated method stub
-		return null;
+		    return appointmentRepository.findAllByPatientId(patientId);		
+		
+	}
+	public void deleteAppointment(Long appointmentId) {
+		// TODO Auto-generated method stub
+		 appointmentRepository.deleteById(appointmentId);
+		
 	}
 	
 }
