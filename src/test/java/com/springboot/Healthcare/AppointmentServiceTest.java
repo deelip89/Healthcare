@@ -1,13 +1,16 @@
 package com.springboot.Healthcare;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,22 +29,31 @@ public class AppointmentServiceTest {
 		MockitoAnnotations.openMocks(this);
 		
 	}
-	@Test
-	public void addAppointmentTest() {
-		//Arranging 
-		Appointment appointment = new Appointment();
+	    @Test
+	    public void addAppointmentTest() {
+	        // Arrange
+	        Appointment appointment = new Appointment();
+	       
+	        when(appointmentRepository.save(appointment)).thenReturn(appointment);
 
-        // Act
-        Appointment result = appointmentService.addAppointment(appointment);
+	        // Act
+	        Appointment result = appointmentService.addAppointment(appointment);
 
-        // Asserting
-        assertEquals(appointment, result);
-		        
+	        // Assert
+	        assertEquals(appointment, result); 
+	        assertNotNull(result); 
+	        assertNotNull(result.getAppointmentId()); 
+
+	       
+
+	        Map<Long, Appointment> appointments = appointmentService.getAppointments();
+	        assertNotNull(appointments);
+	        assertTrue(appointments.containsKey(result.getAppointmentId()));
+	        assertEquals(appointment, appointments.get(result.getAppointmentId()));
 	    }
+	   
 	@Test
 	public void addAppointmentTest_Negative() {
-	    // Arranging
-	   
 	    // Act and Assert
 	    assertThrows(NullPointerException.class, () -> {
 	        appointmentService.addAppointment(null);
@@ -64,6 +76,9 @@ public class AppointmentServiceTest {
 
         // Asserting
         assertEquals(Optional.of(appointment), result);
+        assertNotNull(result);
+		
+        
     }
 	@Test
     void getAppointment_NonexistentAppointmentId_ReturnsEmpty() {
@@ -114,8 +129,43 @@ public class AppointmentServiceTest {
 	        // Assert
 	        assertEquals(expectedAppointments, result);
 	    }
+	    @Test
+	    public void deleteAppointmentTest() {
+	        // Arrange
+	        Long appointmentId = 1L;
+	        Appointment appointment = new Appointment();
+	        
+	        when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+
+	        // Act
+	        appointmentService.deleteAppointment(appointmentId);
+
+	        // Assert
+	        
+	        Map<Long, Appointment> appointments = appointmentService.getAppointments();
+	        assertFalse(appointments.containsKey(appointmentId));
+	        assertNull(appointments.get(appointmentId));
+	    }
+	    @Test
+	    public void deleteNonexistentAppointmentTest() {
+	        // Arrange
+	        Long appointmentId = 1L;
+	        
+	        when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.empty());
+
+	        // Act
+	        appointmentService.deleteAppointment(appointmentId);
+
+	        // Assert
+	        Map<Long, Appointment> appointments = appointmentService.getAppointments();
+	        assertFalse(appointments.containsKey(appointmentId));
+	        assertNull(appointments.get(appointmentId));
+	    }
+
+	    	
+	    }
 	    
-	}
+	
 
 
 	    

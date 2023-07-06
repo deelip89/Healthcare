@@ -34,11 +34,19 @@ public class AppointmentService {
 		    return appointmentRepository.findAllByPatientId(patientId);		
 		
 	}
-	public void deleteAppointment(Long appointmentId) {
+	
+	public Map<Long, Appointment> getAppointments() {
 		// TODO Auto-generated method stub
-		 appointmentRepository.deleteById(appointmentId);
-		
+		return appointments;
 	}
+	public  Appointment deleteAppointment(Long appointmentId) {
+		// TODO Auto-generated method stub
+		return appointments.remove(appointmentId);
+	}
+	
+		
+	
+	
 	
 }
 
