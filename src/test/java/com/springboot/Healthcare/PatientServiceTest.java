@@ -132,4 +132,70 @@ public class PatientServiceTest {
 		Patient result = patientService.updatePatient(nonExistentId, updatedPatient);
 		Assertions.assertNull(result);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	@Test
+	public void validatePatientExistsTest_PatientExists() {
+	    Patient patient = new Patient("Deelip", "Chhetri");
+	    patient.setId(1L);
+	    patientService.addPatient(patient);
+
+	    Assertions.assertDoesNotThrow(() -> patientService.validatePatientExists(1L));
+	}
+
+	@Test
+	public void validatePatientExistsTest_PatientDoesNotExist() {
+	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+	        patientService.validatePatientExists(2L);
+	    });
+	}
+	
+	
+	
+	@Test
+	public void validateValidPatientIdTest_ValidId() {
+	    Long id = 1L;
+
+	    Assertions.assertDoesNotThrow(() -> patientService.validateValidPatientId(id));
+	}
+
+	@Test
+	public void validateValidPatientIdTest_InvalidId_Null() {
+	    Long id = null;
+
+	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+	    	 patientService.validateValidPatientId(id);
+	    });
+	}
+
+	@Test
+	public void validateValidPatientIdTest_InvalidId_Negative() {
+	    Long id = -1L;
+
+	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+	        patientService.validateValidPatientId(id);
+	    });
+	}
+
+	@Test
+	public void validateValidPatientIdTest_InvalidId_Zero() {
+	    Long id = 0L;
+
+	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+	        patientService.validateValidPatientId(id);
+	    });
+	}
+
+	@Test
+	public void validateValidPatientIdTest_InvalidId_Positive() {
+	    Long id= 100L;
+
+	    Assertions.assertDoesNotThrow(() -> patientService.validateValidPatientId(id));
+	}
 }

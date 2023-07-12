@@ -1,5 +1,6 @@
 package com.springboot.Healthcare;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,13 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="Appointments")
+@Table(name="Apointments", schema = "public")
 public class Appointment {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="appointment_id")
 	private Long appointmentId;
+	@Column(name="patient_id")
 	private Long patientId;
+	@Column(name="date")
 	private String date;
+	@Column(name="time")
 	private String time;
 
 	public Appointment() {

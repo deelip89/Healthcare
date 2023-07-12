@@ -43,5 +43,18 @@ public class PatientService {
 	}
 	
 	
+	
+	public void validatePatientExists(Long id) {
+        if (!patients.containsKey(id)) {
+            throw new IllegalArgumentException();
+        }
+    }
+	 public void validateValidPatientId(Long id) {
+	        if (id == null || id <= 0) {
+	            throw new IllegalArgumentException();
+	        }
+	    }
+	
+	
 
 }
