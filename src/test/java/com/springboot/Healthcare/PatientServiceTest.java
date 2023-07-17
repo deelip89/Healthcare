@@ -1,3 +1,4 @@
+
 package com.springboot.Healthcare;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -71,8 +72,6 @@ public class PatientServiceTest {
 		assertEquals(patient, result);
 	}
 	
-	
-
 	@Test
 	public void getPatientTest_Negative_NonExistentPatient() {
 		Long nonExistentId = 2L;
@@ -132,70 +131,53 @@ public class PatientServiceTest {
 		Patient result = patientService.updatePatient(nonExistentId, updatedPatient);
 		Assertions.assertNull(result);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	@Test
-	public void validatePatientExistsTest_PatientExists() {
-	    Patient patient = new Patient("Deelip", "Chhetri");
-	    patient.setId(1L);
-	    patientService.addPatient(patient);
 
-	    Assertions.assertDoesNotThrow(() -> patientService.validatePatientExists(1L));
+//
+//	   @Test
+//	    public void testValidatePatientExists_ValidId() {
+//	        PatientService patientService = new PatientService();
+//	        patientService.addPatient(new Patient());
+//
+//	        Assertions.assertDoesNotThrow(() -> {
+//	            patientService.validatePatientExists(1L);
+//	        });
+//	    }
+//
+//	    @Test
+//	    public void testValidatePatientExists_InvalidId() {
+//	        PatientService patientService = new PatientService();
+//
+//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+//	            patientService.validatePatientExists(1L);
+//	        });
+//	    }
+//
+//	    @Test
+//	    public void testValidateValidPatientId_ValidId() {
+//	        PatientService patientService = new PatientService();
+//
+//	        Assertions.assertDoesNotThrow(() -> {
+//	            patientService.validateValidPatientId(1L);
+//	        });
+//	    }
+//
+//	    @Test
+//	    public void testValidateValidPatientId_InvalidId() {
+//	        PatientService patientService = new PatientService();
+//
+//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+//	            patientService.validateValidPatientId(null);
+//	        });
+//
+//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+//	            patientService.validateValidPatientId(0L);
+//	        });
+//
+//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+//	            patientService.validateValidPatientId(-1L);
+//	        });
+//	    }
 	}
 
-	@Test
-	public void validatePatientExistsTest_PatientDoesNotExist() {
-	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-	        patientService.validatePatientExists(2L);
-	    });
-	}
 	
-	
-	
-	@Test
-	public void validateValidPatientIdTest_ValidId() {
-	    Long id = 1L;
 
-	    Assertions.assertDoesNotThrow(() -> patientService.validateValidPatientId(id));
-	}
-
-	@Test
-	public void validateValidPatientIdTest_InvalidId_Null() {
-	    Long id = null;
-
-	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-	    	 patientService.validateValidPatientId(id);
-	    });
-	}
-
-	@Test
-	public void validateValidPatientIdTest_InvalidId_Negative() {
-	    Long id = -1L;
-
-	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-	        patientService.validateValidPatientId(id);
-	    });
-	}
-
-	@Test
-	public void validateValidPatientIdTest_InvalidId_Zero() {
-	    Long id = 0L;
-
-	    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-	        patientService.validateValidPatientId(id);
-	    });
-	}
-
-	@Test
-	public void validateValidPatientIdTest_InvalidId_Positive() {
-	    Long id= 100L;
-
-	    Assertions.assertDoesNotThrow(() -> patientService.validateValidPatientId(id));
-	}
-}

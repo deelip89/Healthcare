@@ -1,12 +1,12 @@
 package com.springboot.Healthcare;
 
-public class AppointmentNotFoundException extends Exception {
+public class PatientNotFoundException extends RuntimeException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public AppointmentNotFoundException(String message) {
+	public PatientNotFoundException(String message) {
         super(message);
     }
 
