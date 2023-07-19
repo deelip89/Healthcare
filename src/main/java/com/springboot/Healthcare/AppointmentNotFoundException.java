@@ -1,6 +1,6 @@
 package com.springboot.Healthcare;
 
-public class AppointmentNotFoundException extends Exception {
+public class AppointmentNotFoundException extends RuntimeException {
 	/**
 	 * 
 	 */

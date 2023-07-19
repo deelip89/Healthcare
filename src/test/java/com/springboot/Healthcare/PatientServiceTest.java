@@ -2,26 +2,19 @@
 package com.springboot.Healthcare;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 
 
@@ -37,147 +30,134 @@ public class PatientServiceTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
+	@Test
+    public void addPatientTest() {
+        // Arrange
+        Patient patient = new Patient();
+        patient.setId(1L);
+        
+        when(patientRepository.existsById(patient.getId())).thenReturn(false);
+        when(patientRepository.save(patient)).thenReturn(patient);
 
-	@Test
-	public void addPatientTest() {
-	Patient patient = new Patient( "Deelip", "Chhetri");
-	when(patientRepository.save(patient)).thenReturn(patient);
-	Patient addedPatient = patientService.addPatient(patient);
-		Map<Long, Patient> patients = patientService.getPatients();
-		assertNotNull(addedPatient);
-	    assertNotNull(addedPatient.getId());
-	    Patient getPatient = patients.get(addedPatient.getId());
-		assertEquals(patient.getFirstName(),getPatient.getFirstName());
-		assertEquals(patient.getLastName(), getPatient.getLastName());
-	}
-	
+        // Act
+        Patient result = patientService.addPatient(patient);
 
-	@Test
-	public void addPatientTest_Negative_NullPatient() {
-		PatientService patientService = new PatientService();
-		Assertions.assertThrows(Exception.class, () -> {
-			patientService.addPatient(null);
-		});
-	}
-	
-	@Test
-	public void getPatientTest() {
-		Patient patient = new Patient( "Deelip", "Chhetri");
-		patient.setId(1L);
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+      
+    }
+
+    @Test
+    public void addPatientTest_PatientAlreadyExistsException() {
+        // Arrange
+        Patient patient = new Patient();
+        patient.setId(1L);
+
+        when(patientRepository.existsById(patient.getId())).thenReturn(true);
+
+        // Act and Assert
+        assertThrows(PatientAlreadyExistsException.class, () -> patientService.addPatient(patient));
+        
+    }
+    @Test
+    void getPatientTest() {
+        // Arrange
+        
+        Patient patient = new Patient( );
+        patient.setId (1L);
         when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
 
-		
-		patientService.addPatient(patient);
-		Patient result = patientService.getPatient(1L);
-		assertEquals(patient, result);
-	}
-	
-	@Test
-	public void getPatientTest_Negative_NonExistentPatient() {
-		Long nonExistentId = 2L;
-		Patient result = patientService.getPatient(nonExistentId);
-		Assertions.assertNull(result);
-	}
+        // Act
+        Patient result = patientService.getPatient(1L);
 
-	@Test
-	public void getAllPatientTest() {
-		Patient patient1 = new Patient( "Deelip", "Chhetri");
-		Patient patient2 = new Patient( "Sagar", "Thapa");
-		patientService.addPatient(patient1);
-		patientService.addPatient(patient2);
+        // Assert
+        assertNotNull(result);
+        assertEquals(patient, result);
+       
+    }
+    @Test
+    void getPatientTest_PatientNotFoundException() {
+        // Arrange
+        Long nonExistentId = 2L;
+//        when(patientRepository.findById(patientId)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        assertThrows(PatientNotFoundException.class, () -> patientService.getPatient(nonExistentId));
+        
+    }
+    @Test
+    public void getAllPatientsTest() {
+       
+        Patient patient1 = new Patient();
+        Patient patient2 = new Patient();
+
+       
         when(patientRepository.findAll()).thenReturn(Arrays.asList(patient1, patient2));
 
-		List<Patient> allPatients = patientService.getAllPatient();
-		assertEquals(2, allPatients.size());
-		assertTrue(allPatients.contains(patient1));
-		assertTrue(allPatients.contains(patient2));
-	}
+      
+        List<Patient> allPatients = patientService.getAllPatients();
 
-	@Test
-	void deletePatientTest() {
-	     Patient patient = new Patient( "Deelip", "Chhetri");
-		
-		when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
-		patientService.addPatient(patient);
-		Patient deletedPatient = patientService.deletePatient(1L);
-		assertEquals(patient, deletedPatient);
-		assertNull(patientService.getPatient(1L));
-	}
+        
+        assertEquals(2, allPatients.size());
+        assertEquals(patient1, allPatients.get(0));
+        assertEquals(patient2, allPatients.get(1));
+    }
+    @Test
+    public void updatePatientTest() {
+        // Arrange
+        Long id = 1L;
+        Patient existingPatient = new Patient();
+        existingPatient.setId(id);
+        
+        Patient updatedPatient = new Patient();
+        updatedPatient.setId(id);
+       
+        when(patientRepository.existsById(id)).thenReturn(true);
+        when(patientRepository.save(updatedPatient)).thenReturn(updatedPatient);
 
-	@Test
-	public void deletePatientTest_Negative_NonExistentPatient() {
-		Long nonExistentId = 2L;
-		Patient result = patientService.deletePatient(nonExistentId);
-		Assertions.assertNull(result);
-	}
+        // Act
+        Patient result = patientService.updatePatient(id, updatedPatient);
 
-	@Test
-	void updatePatientTest() {
-		
-		Patient patient = new Patient( "Deelip", "Chhetri");
-		patientService.addPatient(patient);
-		Patient updatedPatient = new Patient( "Sagar", "Thapa");
-		when(patientRepository.existsById(1L)).thenReturn(true);
-		when(patientRepository.save(patient)).thenReturn(patient);
-		Patient result = patientService.updatePatient(1L, updatedPatient);
-		assertEquals(updatedPatient, result);
-		assertEquals("Thapa", patientService.getPatient(1L).getLastName());
+        // Assert
+       
 
-	}
-	@Test
-	public void updatePatientTest_Negative_NonExistentPatient() {
-		Long nonExistentId = 2L;
-		Patient updatedPatient = new Patient( "Deelip", "Chhetri");
-		Patient result = patientService.updatePatient(nonExistentId, updatedPatient);
-		Assertions.assertNull(result);
-	}
+        assertEquals(updatedPatient, result);
+}
+    @Test
+    public void updatePatientTest_PatientNotFoundException() {
+        // Arrange
+        Long id = 1L;
+        Patient updatedPatient = new Patient();
+        updatedPatient.setId(id);
+       
 
-//
-//	   @Test
-//	    public void testValidatePatientExists_ValidId() {
-//	        PatientService patientService = new PatientService();
-//	        patientService.addPatient(new Patient());
-//
-//	        Assertions.assertDoesNotThrow(() -> {
-//	            patientService.validatePatientExists(1L);
-//	        });
-//	    }
-//
-//	    @Test
-//	    public void testValidatePatientExists_InvalidId() {
-//	        PatientService patientService = new PatientService();
-//
-//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-//	            patientService.validatePatientExists(1L);
-//	        });
-//	    }
-//
-//	    @Test
-//	    public void testValidateValidPatientId_ValidId() {
-//	        PatientService patientService = new PatientService();
-//
-//	        Assertions.assertDoesNotThrow(() -> {
-//	            patientService.validateValidPatientId(1L);
-//	        });
-//	    }
-//
-//	    @Test
-//	    public void testValidateValidPatientId_InvalidId() {
-//	        PatientService patientService = new PatientService();
-//
-//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-//	            patientService.validateValidPatientId(null);
-//	        });
-//
-//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-//	            patientService.validateValidPatientId(0L);
-//	        });
-//
-//	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-//	            patientService.validateValidPatientId(-1L);
-//	        });
-//	    }
-	}
+        when(patientRepository.existsById(id)).thenReturn(false);
 
-	
+        // Act & Assert
+        assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(id, updatedPatient));
+    }
+    @Test
+    public void deletePatientTest() {
+        Long patientId = 1L;
+
+        when(patientRepository.existsById(patientId)).thenReturn(true);
+
+        patientService.deletePatient(patientId);
+
+       
+    }
+    @Test
+    public void deletePatientTest_PatientNotFoundException() {
+        Long patientId = 2L;
+
+        when(patientRepository.existsById(patientId)).thenReturn(false);
+
+        assertThrows(PatientNotFoundException.class, () -> { patientService.deletePatient(patientId);
+        });
+
+       
+    }
+}
+ 
 

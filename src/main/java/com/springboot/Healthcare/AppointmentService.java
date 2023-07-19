@@ -1,17 +1,12 @@
 package com.springboot.Healthcare;
 
-import java.util.Collections;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 @Service
 public class AppointmentService {
     @Autowired
@@ -75,20 +70,7 @@ public class AppointmentService {
 
    
     
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-    
-    @ExceptionHandler(AppointmentAlreadyExistsException.class)
-    public ResponseEntity<String> handleAppointmentAlreadyExistsException(AppointmentAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-    
-    @ExceptionHandler(AppointmentNotFoundException.class)
-    public ResponseEntity<String> AppointmentNotFoundException(AppointmentNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
+   
 }
 
 
