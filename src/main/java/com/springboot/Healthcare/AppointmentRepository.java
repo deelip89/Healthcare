@@ -8,4 +8,12 @@ import org.springframework.stereotype.Repository;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 	List<Appointment> findAllByPatientId(Long patientId);
 
+	
+
+	boolean existsByDateAndTime(String date, String time);
+
+	
+
+	
+
 }

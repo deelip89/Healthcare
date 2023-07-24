@@ -7,127 +7,74 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 public class AppointmentService {
-    @Autowired
-    private AppointmentRepository appointmentRepository;
+	@Autowired
+	private AppointmentRepository appointmentRepository;
 
-    private Map<Long, Appointment> appointments = new HashMap<>();
-    private Long nextAppointmentId = 1L;
+	private Map<Long, Appointment> appointments = new HashMap<>();
+	private Long nextAppointmentId = 1L;
 
-    public Appointment addAppointment(Appointment appointment) throws AppointmentAlreadyExistsException {
-        if (appointment == null) {
-            throw new IllegalArgumentException("Appointment can't be null.");
-        }
+	public Appointment addAppointment(Appointment appointment) {
+		if (appointmentRepository.existsByDateAndTime(appointment.getDate(), appointment.getTime())) {
+            throw new ValidationException("Appointment with the same date and time already exists exists.");
+        }	
+		
+		appointment.setAppointmentId(nextAppointmentId++);
+		appointments.put(appointment.getAppointmentId(), appointment);
+		return appointmentRepository.save(appointment);
+	}
+	
 
-        if (appointments.containsKey(appointment.getAppointmentId())) {
-            throw new AppointmentAlreadyExistsException("Appointment with id: " + appointment.getAppointmentId() + " already exists.");
-        }
+	public Appointment getAppointment(Long appointmentId) {
+		if (appointmentId <= 0) {
+	        throw new ValidationException("Appointment Id should not be 0 or less then 0.");
+	    }
+		return appointmentRepository.findById(appointmentId)
+				.orElseThrow(() -> new AppointmentNotFoundException("Appointment not found with ID: " + appointmentId));
+		
+	}
+	
 
-        Long appointmentId = nextAppointmentId++;
-        appointment.setAppointmentId(appointmentId);
-        appointments.put(appointmentId, appointment);
+	
+	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
+		
+		List<Appointment> appointments = appointmentRepository.findAllByPatientId(patientId);
 
-        return appointment;
-    }
+		if (appointments.isEmpty()) {
+			throw new AppointmentNotFoundException("Appointments not found for patient with ID: " + patientId);
+		}
+		
+		return appointmentRepository.findAllByPatientId(patientId);
+	}
+	
+	
 
-    public Optional<Appointment> getAppointment(Long appointmentId) throws AppointmentNotFoundException {
-        if (appointmentId == null) {
-            throw new IllegalArgumentException("Apointment id can't be null.");
-        }
+	
+	
+	public List<Appointment> getAllAppointments() {
 
-        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
-        if (appointment.isEmpty()) {
-            throw new AppointmentNotFoundException("Appointment not found with ID: " + appointmentId);
-        }
+		List<Appointment> appointments = appointmentRepository.findAll();
 
-        return appointment;
-    }
+		return Optional.ofNullable(appointments)
+				.orElseThrow(() -> new AppointmentNotFoundException("Appointments not found."));
+	}
+	
+	
+	
 
-    public List<Appointment> getAppointmentsByPatientId(Long patientId) {
-        if (patientId == null) {
-            throw new IllegalArgumentException("Patient ID cannot be null.");
-        }
+	public void deleteById(Long appointmentId) {
+		if (appointmentId == null || appointmentId <= 0) {
+	        throw new ValidationException("Invalid appointment ID. Please provide a valid positive ID.");
+	    }
+		if (!appointmentRepository.existsById(appointmentId)) {
 
-        return appointmentRepository.findAllByPatientId(patientId);
-    }
+			throw new PatientNotFoundException("Patient with ID " + appointmentId + " not found.");
+		}
+		appointmentRepository.deleteById(appointmentId);
+	}
 
-    public Map<Long, Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public Appointment deleteAppointment(Long appointmentId) throws AppointmentNotFoundException {
-        if (appointmentId == null) {
-            throw new IllegalArgumentException("Appointment ID cannot be null.");
-        }
-
-        if (!appointments.containsKey(appointmentId)) {
-            throw new AppointmentNotFoundException("Appointment not found with ID: " + appointmentId);
-        }
-
-        return appointments.remove(appointmentId);
-    }
-
-   
-    
-   
 }
 
 
-//@Service
-//public class AppointmentService {
-//
-//	@Autowired
-//	private AppointmentRepository appointmentRepository;
-//
-//	private Map<Long, Appointment> appointments = new HashMap<>();
-//	private Long nextAppointmentId = 1L;
-//
-//	public Appointment addAppointment(Appointment appointment) {
-//		Long appointmentId = nextAppointmentId++;
-//
-//		appointment.setAppointmentId(appointmentId);
-//		appointments.put(appointmentId, appointment);
-//
-//		// TODO Auto-generated method stub
-//		return appointment;
-//	}
-//
-//	public Optional<Appointment> getAppointment(Long appointmentId) throws AppointmentNotFoundException {
-//		if (appointmentId <= 0) {
-//			throw new IllegalArgumentException();
-//		}
-//
-//		Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
-//		if (optionalAppointment.isEmpty()) {
-//			throw new AppointmentNotFoundException();
-//		}
-//		return optionalAppointment;
-//	}
-//
-//	public List<Appointment> getAppointmentsByPatientId(Long patientId) throws IllegalArgumentException {
-//		if (patientId <= 0) {
-//			throw new IllegalArgumentException();
-//		}
-//
-//		return appointmentRepository.findAllByPatientId(patientId);
-//	}
-//
-//	public Map<Long, Appointment> getAppointments() {
-//		
-//		return appointments;
-//	}
-//
-//	public Appointment deleteAppointment(Long appointmentId) throws AppointmentNotFoundException {
-//		if (appointmentId <= 0) {
-//			throw new IllegalArgumentException();
-//		}
-//
-//		if (!appointments.containsKey(appointmentId)) {
-//			throw new AppointmentNotFoundException();
-//		}
-//
-//		return appointments.remove(appointmentId);
-//	}
-//}
-//

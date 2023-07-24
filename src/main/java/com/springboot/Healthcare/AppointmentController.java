@@ -15,25 +15,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/appointments")
 public class AppointmentController {
 	@Autowired
-	private AppointmentRepository appointmentRepository;
+	private AppointmentService appointmentService;
+	
 
 	@PostMapping("/add")
 	public Appointment addAppointment(@RequestBody Appointment appointment) {
-		return appointmentRepository.save(appointment);
+		return appointmentService.addAppointment(appointment);
 	}
+	 @GetMapping("/{appointmentId}")
+	public Appointment getAppointment(@PathVariable Long appointmentId) {
+        return appointmentService.getAppointment(appointmentId);
+    }
 
-	@GetMapping("/{appointmentId}")
-	public Optional<Appointment> getAppointment(@PathVariable Long appointmentId) {
-		return appointmentRepository.findById(appointmentId);
-	}
-
-	@GetMapping("/patient/{patientId}")
-	public List<Appointment> getAppointmentsByPatientId(@PathVariable Long patientId) {
-		return appointmentRepository.findAll();
-	}
-
-	@DeleteMapping("/{appointmentId}")
-	public void  deleteAppointment(@PathVariable Long appointmentId) {
-		 appointmentRepository.deleteById(appointmentId);
+		@GetMapping("/patient/{patientId}")
+		public List<Appointment> getAppointmentsByPatientId(@PathVariable Long patientId) {
+			return appointmentService.getAppointmentsByPatientId(patientId);
+		}
+		@GetMapping
+		public List<Appointment>getAllAppointments(){
+			return appointmentService.getAllAppointments();
+			
+		}
+    	@DeleteMapping("/{appointmentId}")
+    	public void  deleteAppointment(@PathVariable Long appointmentId) {
+    		 appointmentService.deleteById(appointmentId);
 	}
 }
