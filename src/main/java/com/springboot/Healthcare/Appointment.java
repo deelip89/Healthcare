@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,16 +17,27 @@ public class Appointment {
 	private Long patientId;
 	private String date;
 	private String time;
-
+	@ManyToOne
+	@JoinColumn(name = "patient_Details")
+	private Patient patient;
+  
 	public Appointment() {
 	}
-	public Appointment(Long appointmentId, Long patientId, String date, String time) {
+	public Appointment(Long appointmentId, Long patientId, String date, String time, Patient patient) {
 		super();
 		this.appointmentId = appointmentId;
 		this.patientId = patientId;
 		this.date = date;
 		this.time = time;
+		this.patient = patient;
 	}
+	public Patient getPatient() {
+		return patient;
+	}
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+	
 	public Long getAppointmentId() {
 		return appointmentId;
 	}

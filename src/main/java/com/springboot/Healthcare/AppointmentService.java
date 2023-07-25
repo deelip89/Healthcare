@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 public class AppointmentService {
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	@Autowired
+    private PatientRepository patientRepository; 
 
 	private Map<Long, Appointment> appointments = new HashMap<>();
 	private Long nextAppointmentId = 1L;
@@ -31,12 +33,18 @@ public class AppointmentService {
 		if (appointmentId <= 0) {
 	        throw new ValidationException("Appointment Id should not be 0 or less then 0.");
 	    }
-		return appointmentRepository.findById(appointmentId)
+		 Appointment appointment =appointmentRepository.findById(appointmentId)
 				.orElseThrow(() -> new AppointmentNotFoundException("Appointment not found with ID: " + appointmentId));
-		
-	}
-	
+		Long patientId = appointment.getPatientId();
+        if (patientId != null) {
+            
+        	Patient patient = patientRepository.findById(patientId)
+                    .orElseThrow(() -> new PatientNotFoundException("Patient not found with ID: " + patientId));
+            appointment.setPatient(patient);
+        }
 
+        return appointment;
+    }
 	
 	public List<Appointment> getAppointmentsByPatientId(Long patientId) {
 		
@@ -46,10 +54,16 @@ public class AppointmentService {
 			throw new AppointmentNotFoundException("Appointments not found for patient with ID: " + patientId);
 		}
 		
-		return appointmentRepository.findAllByPatientId(patientId);
-	}
-	
-	
+		Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found with ID: " + patientId));
+
+       
+        for (Appointment appointment : appointments) {
+            appointment.setPatient(patient);
+        }
+
+        return appointments;
+    }
 
 	
 	
